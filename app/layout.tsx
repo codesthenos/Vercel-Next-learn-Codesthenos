@@ -1,8 +1,10 @@
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+import '@/app/ui/global.css'
+
+interface Props {
+  children: React.ReactNode
+}
+
+export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
       <body>{children}</body>
