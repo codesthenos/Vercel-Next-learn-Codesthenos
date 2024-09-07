@@ -5,14 +5,26 @@ import LatestInvoices from "@/app/ui/dashboard/latest-invoices";
 import { Card } from "@/app/ui/dashboard/cards";
 
 export default async function Page() {
-  const revenue = await fetchRevenue()
-  const latestInvoices = await fetchLatestInvoices()
+  // Waterfall fetching
+  //const revenue = await fetchRevenue()
+  //const latestInvoices = await fetchLatestInvoices()
+  //const {
+  //  numberOfCustomers,
+  //  numberOfInvoices,
+  //  totalPaidInvoices,
+  //  totalPendingInvoices
+  //} = await fetchCardData()
+  
+  // Pararell fetching
+  const data = await Promise.all([fetchRevenue(), fetchLatestInvoices(), fetchCardData()])
+  const revenue = data[0]
+  const latestInvoices = data[1]
   const {
-    numberOfCustomers,
-    numberOfInvoices,
     totalPaidInvoices,
-    totalPendingInvoices
-  } = await fetchCardData()
+    totalPendingInvoices,
+    numberOfInvoices,
+    numberOfCustomers
+  } = data[2]
 
   return (
     <main>
