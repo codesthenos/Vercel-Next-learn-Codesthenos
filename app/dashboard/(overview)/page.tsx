@@ -1,8 +1,10 @@
 import { lusitana } from "@/app/ui/fonts";
-import { fetchCardData, fetchLatestInvoices, fetchRevenue } from "@/app/lib/data";
+import { fetchCardData, fetchLatestInvoices } from "@/app/lib/data";
 import RevenueChart from "@/app/ui/dashboard/revenue-chart";
 import LatestInvoices from "@/app/ui/dashboard/latest-invoices";
 import { Card } from "@/app/ui/dashboard/cards";
+import { Suspense } from "react";
+import { RevenueChartSkeleton } from "@/app/ui/skeletons";
 
 export default async function Page() {
   // Waterfall fetching
@@ -16,15 +18,15 @@ export default async function Page() {
   //} = await fetchCardData()
   
   // Pararell fetching
-  const data = await Promise.all([fetchRevenue(), fetchLatestInvoices(), fetchCardData()])
-  const revenue = data[0]
-  const latestInvoices = data[1]
+  const data = await Promise.all([fetchLatestInvoices(), fetchCardData()])
+
+  const latestInvoices = data[0]
   const {
     totalPaidInvoices,
     totalPendingInvoices,
     numberOfInvoices,
     numberOfCustomers
-  } = data[2]
+  } = data[1]
 
   return (
     <main>
@@ -38,12 +40,10 @@ export default async function Page() {
         <Card title="Total Customers" value={numberOfCustomers} type="customers" />
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div>
-          <RevenueChart revenue={revenue} />
-        </div>
-        <div>
-          <LatestInvoices latestInvoices={latestInvoices} />
-        </div>
+        <Suspense fallback={<RevenueChartSkeleton />}>
+          <RevenueChart />
+        </Suspense>
+        <LatestInvoices latestInvoices={latestInvoices} />
       </div>
     </main>
   );
