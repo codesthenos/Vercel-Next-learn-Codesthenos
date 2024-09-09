@@ -14,14 +14,12 @@ export default function Search({ placeholder }: { placeholder: string }) {
     console.log(term)
 
     if (term) {
-      params.set('query', term)
+      params.set('search', term)
     } else {
-      params.delete('query')
+      params.delete('search')
     }
-
-    const searchQuery = params.get('query') ? `?search=${params.get('query')}` : ''
     
-    replace(`${pathname}${searchQuery}`)
+    replace(`${pathname}?${params.toString()}`)
   }, 500)
 
   return (
