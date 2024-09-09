@@ -15,6 +15,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
 
     if (term) {
       params.set('search', term)
+      params.set('page', '1')
     } else {
       params.delete('search')
     }
