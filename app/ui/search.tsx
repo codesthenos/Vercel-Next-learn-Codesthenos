@@ -16,9 +16,10 @@ export default function Search({ placeholder }: { placeholder: string }) {
     } else {
       params.delete('query')
     }
-    const searchQuery = params.get('query') ? `?search=${params.get('query')}` : ''
+    //I know why this doesnt work but right now not sure if trying to make it work
+    //const searchQuery = params.get('query') ? `?search=${params.get('query')}` : ''
     
-    replace(`${pathname}${searchQuery}`)
+    replace(`${pathname}?${params.toString()}`)
   }
   return (
     <div className="relative flex flex-1 flex-shrink-0">
