@@ -9,11 +9,11 @@ export default async function Page({
   searchParams,
 }: {
   searchParams?: {
-    query?: string
+    search?: string
     page?: string
   }
 }) {
-  const query = searchParams?.query || ''
+  const query = searchParams?.search || ''
   const currentPage = Number(searchParams?.page) || 1
   return (
     <div className="w-full">
