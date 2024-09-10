@@ -1,7 +1,9 @@
 'use server'
 
 import { z } from 'zod'
-import { customers } from './placeholder-data'
+import { sql } from '@vercel/postgres'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 const FormSchema = z.object({
   id: z.string(),
@@ -37,4 +39,20 @@ export async function createInvoice(formData:FormData) {
   console.log(typeof customerId)
   console.log(typeof amount)
   console.log(typeof status)
+
+  // tenemos customerId y status, vamos a transformar amount a centimos y sacar el date
+  const amountInCents = amount * 100
+  const date = new Date().toISOString().split('T')[0]
+
+  // insertamos en la base de datos el objeto compuesto de los datos obtenidos
+
+  await sql`
+    INSERT INTO invoices (customer_id, amount, status, date)
+    VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+  `
+
+  // esto es para limpiar las cookies al volver a invoices y asegurarnos hacer el fetch para traer la creada
+  revalidatePath('/dashboard/invoices')
+  // esto es para redireccionar
+  redirect('/dashboard/invoices')
 }
