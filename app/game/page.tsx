@@ -214,7 +214,7 @@ export default function VerticalPlatformGame() {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
     }
-  }, [])
+  }, [gameLost, gameWon])
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
