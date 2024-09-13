@@ -131,3 +131,16 @@ export async function deleteInvoice (id: string) {
     return { message: 'Database Error: Failed to Delete Invoice.' }
   }
 }
+
+export async function checkAllDBInvoices (checked: boolean) {
+  try {
+    await sql`
+    UPDATE invoices
+    SET checked = ${checked}
+  `
+    revalidatePath('/dashboard/invoices')
+    return { message: checked ? 'Checked all Invoices' : 'Unnchecked all Invoices' }
+  } catch (error) {
+    return { message: 'Database Error: Failed to Check Invoices'}
+  }
+}

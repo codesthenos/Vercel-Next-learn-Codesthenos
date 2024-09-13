@@ -2,7 +2,9 @@ import Image from 'next/image';
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
+import type { InvoicesTable } from '@/app/lib/definitions';
 import { fetchFilteredInvoices } from '@/app/lib/data';
+import { IndividualCheckbox } from '@/app/ui/invoices/IndividualCheckbox';
 
 export default async function InvoicesTable({
   query,
@@ -11,7 +13,16 @@ export default async function InvoicesTable({
   query: string;
   currentPage: number;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const invoices = await fetchFilteredInvoices(query, currentPage)
+
+  const handleIndividualCheck = async ({ checked, id }: { checked: boolean, id: string}) => {
+    'use server'
+    const invoiceToCheck = invoices.filter(invoice => invoice.id === id).map(invoice => {
+      return { ...invoice, checked }
+    })
+    console.log('invoiceToCheck:', invoiceToCheck)
+    console.log('invoices LENGTH:', invoices.length)
+  }
 
   return (
     <div className="mt-6 flow-root">
@@ -24,6 +35,7 @@ export default async function InvoicesTable({
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
+                  <IndividualCheckbox handleIndividualCheck={handleIndividualCheck} invoice={invoice} />
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
