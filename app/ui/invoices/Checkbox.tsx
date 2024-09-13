@@ -1,19 +1,16 @@
 'use client'
 
-import { checkAllDBInvoices } from "@/app/lib/actions"
+import { checkFilteredInvoices } from "@/app/lib/actions"
 import { useState } from "react"
 
-export function Checkbox ({
-  //handleCheckAll
-}: {
-  //handleCheckAll: (checked: boolean) => void
-}) {
+export function Checkbox ({ query }: { query: string }) {
+
   const [checked, setChecked] = useState(false)
 
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked
     setChecked(isChecked)
-    checkAllDBInvoices(isChecked)
+    checkFilteredInvoices(isChecked, query)
     console.log('all:', isChecked)
   }
 

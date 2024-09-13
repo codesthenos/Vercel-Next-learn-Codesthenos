@@ -19,17 +19,7 @@ export default async function Page({
   const query = searchParams?.search || ''
   const currentPage = Number(searchParams?.page) || 1
   const totalPages = await fetchInvoicesPages(query)
-  //const invoices = await fetchAllFilteredInvoices(query);
-  /*
-  const handleCheckAll = async (checked: boolean) => {
-    'use server'
-    const invoicesWithCheck = invoices.map(invoice => {
-      return { ...invoice, checked }
-    })
-    console.log(invoicesWithCheck.map(invoice => `invoice.checked: ${invoice.checked}`))
-    console.log('invoices LENGTH:', invoices.length)
-  }
-  */
+
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
@@ -37,7 +27,7 @@ export default async function Page({
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Checkbox /*handleCheckAll={handleCheckAll}*/ />
+        <Checkbox query={query} />
         <Search placeholder="Search invoices..." />
         <CreateInvoice />
       </div>

@@ -132,12 +132,20 @@ export async function deleteInvoice (id: string) {
   }
 }
 
-export async function checkAllDBInvoices (checked: boolean) {
+export async function checkFilteredInvoices (checked: boolean, query: string) {
   try {
     await sql`
     UPDATE invoices
     SET checked = ${checked}
-  `
+    FROM customers
+    WHERE invoices.customer_id = customers.id
+      AND (
+        customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        invoices.amount::text ILIKE ${`%${query}%`} OR
+        invoices.date::text ILIKE ${`%${query}%`} OR
+        invoices.status ILIKE ${`%${query}%`}
+      )`
     revalidatePath('/dashboard/invoices')
     return { message: checked ? 'Checked all Invoices' : 'Unnchecked all Invoices' }
   } catch (error) {
