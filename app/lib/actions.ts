@@ -72,7 +72,7 @@ export async function createInvoice(prevState: State, formData:FormData) {
     await sql`
     INSERT INTO invoices (customer_id, amount, status, date)
     VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-  `
+    `
   } catch (error) {
     return { message: 'Database Error: Failed to Create Invoice.' }
   }
@@ -110,7 +110,7 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
     UPDATE invoices
     SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
     WHERE id = ${id}
-  `
+    `
   } catch (error) {
     return { message: 'Database Error: Failed to Update Invoice.'}
   }
@@ -150,5 +150,17 @@ export async function checkFilteredInvoices (checked: boolean, query: string) {
     return { message: checked ? 'Checked all Invoices' : 'Unnchecked all Invoices' }
   } catch (error) {
     return { message: 'Database Error: Failed to Check Invoices'}
+  }
+}
+
+export async function checkInvoiceById (checked: boolean, id: string) {
+  try {
+    await sql`
+    UPDATE invoices
+    SET checked = ${checked}
+    WHERE id = ${id}
+    `
+  } catch (error) {
+    return { message: 'Database Error: Failed to Check Invoice'}
   }
 }

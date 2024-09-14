@@ -1,42 +1,35 @@
 'use client'
 
-import type { InvoicesTable } from "@/app/lib/definitions"
+import { checkInvoiceById } from "@/app/lib/actions"
 import { useState } from "react"
 
-export function IndividualCheckbox ({
-  handleIndividualCheck,
-  invoice
-}: {
-  handleIndividualCheck: ({ checked, id }: { checked: boolean, id: string }) => void,
-  invoice: InvoicesTable
-}) {
+export function IndividualCheckbox ({ id, checked }: { id: string, checked?: boolean }) {
   const [individualChecked, setIndividualChecked] = useState(false)
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked
     setIndividualChecked(isChecked)
-    handleIndividualCheck({ checked: isChecked, id: invoice.id})
+    checkInvoiceById(isChecked, id)
     console.log('individual:', isChecked)
   }
-  console.log(invoice.checked)
 
   return (
     <div>
       <input
         type="checkbox"
-        id={invoice.id}
+        id={id}
         className="hidden"
         onChange={handleCheck}
-        checked={individualChecked}
+        checked={checked && individualChecked}
       />
       <label
-        htmlFor={invoice.id}
-        className={invoice.checked
+        htmlFor={id}
+        className={checked && individualChecked
             ? "bg-red-600 rounded p-2 text-gray-200"
             : "bg-green-600 rounded p-2 text-gray-200"
         }
       >
-        {invoice.checked ? 'Uncheck' : 'Check'}
+        {checked && individualChecked ? 'Uncheck' : 'Check'}
       </label>
     </div>
   )

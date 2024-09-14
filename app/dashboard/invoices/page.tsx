@@ -1,4 +1,4 @@
-import { fetchInvoicesPages } from "@/app/lib/data";
+import { fetchAllFilteredInvoices, fetchInvoicesPages } from "@/app/lib/data";
 import { lusitana } from "@/app/ui/fonts";
 import { CreateInvoice } from "@/app/ui/invoices/buttons";
 import { Checkbox } from "@/app/ui/invoices/Checkbox";
@@ -18,7 +18,12 @@ export default async function Page({
 }) {
   const query = searchParams?.search || ''
   const currentPage = Number(searchParams?.page) || 1
-  const totalPages = await fetchInvoicesPages(query)
+  const [totalPages, invoices] = await Promise.all([
+    fetchInvoicesPages(query),
+    fetchAllFilteredInvoices(query)
+  ])
+
+  const hasUnchecked = invoices.some(invoice => !invoice.checked)
 
   return (
     <div className="w-full">
@@ -27,7 +32,7 @@ export default async function Page({
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Checkbox query={query} />
+        <Checkbox query={query} hasUnchecked={hasUnchecked} />
         <Search placeholder="Search invoices..." />
         <CreateInvoice />
       </div>

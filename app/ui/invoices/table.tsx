@@ -15,15 +15,6 @@ export default async function InvoicesTable({
 }) {
   const invoices = await fetchFilteredInvoices(query, currentPage)
 
-  const handleIndividualCheck = async ({ checked, id }: { checked: boolean, id: string}) => {
-    'use server'
-    const invoiceToCheck = invoices.filter(invoice => invoice.id === id).map(invoice => {
-      return { ...invoice, checked }
-    })
-    console.log('invoiceToCheck:', invoiceToCheck)
-    console.log('invoices LENGTH:', invoices.length)
-  }
-
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -35,7 +26,7 @@ export default async function InvoicesTable({
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
-                  <IndividualCheckbox handleIndividualCheck={handleIndividualCheck} invoice={invoice} />
+                  <IndividualCheckbox id={invoice.id} checked={invoice.checked}/>
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
