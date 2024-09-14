@@ -41,7 +41,7 @@ export function Checkbox ({ query, allChecked, currentPage }: { query: string, a
           : "bg-green-600 rounded p-2 text-gray-200"
       }
     >
-      {checked ? 'Uncheck' : 'Check All'}
+      {checked ? 'Uncheck All' : 'Check All'}
     </label>
   </div>
   )
