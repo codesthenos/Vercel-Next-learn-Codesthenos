@@ -1,17 +1,18 @@
 'use client'
 
 import { checkInvoiceById } from "@/app/lib/actions"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-export function IndividualCheckbox ({ id, checked }: { id: string, checked?: boolean }) {
-  const [individualChecked, setIndividualChecked] = useState(false)
+export function IndividualCheckbox ({ id, checked }: { id: string, checked: boolean }) {
+  const [individualChecked, setIndividualChecked] = useState(checked)
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked
     setIndividualChecked(isChecked)
     checkInvoiceById(isChecked, id)
-    console.log('individual:', isChecked)
   }
+
+  useEffect(() => { setIndividualChecked(checked)}, [checked])
 
   return (
     <div>
@@ -20,16 +21,16 @@ export function IndividualCheckbox ({ id, checked }: { id: string, checked?: boo
         id={id}
         className="hidden"
         onChange={handleCheck}
-        checked={checked && individualChecked}
+        checked={individualChecked}
       />
       <label
         htmlFor={id}
-        className={checked && individualChecked
+        className={individualChecked
             ? "bg-red-600 rounded p-2 text-gray-200"
             : "bg-green-600 rounded p-2 text-gray-200"
         }
       >
-        {checked && individualChecked ? 'Uncheck' : 'Check'}
+        {individualChecked ? 'Uncheck' : 'Check'}
       </label>
     </div>
   )

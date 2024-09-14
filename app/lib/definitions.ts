@@ -53,7 +53,7 @@ export type InvoicesTable = {
   date: string;
   amount: number;
   status: 'pending' | 'paid';
-  checked?: boolean
+  checked: boolean
 };
 
 export type CustomersTableType = {

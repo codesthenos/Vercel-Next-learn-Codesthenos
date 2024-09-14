@@ -155,6 +155,11 @@ export async function fetchAllFilteredInvoices(query: string) {
   }
 }
 
+export async function fetchFilteredInvoicesChecked (query: string) {
+  const invoices = await fetchAllFilteredInvoices(query)
+  return invoices.every(invoice => invoice.checked)
+}
+
 export async function fetchInvoicesPages(query: string) {
   try {
     const count = await sql`SELECT COUNT(*)

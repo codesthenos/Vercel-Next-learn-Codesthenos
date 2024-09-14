@@ -1,10 +1,12 @@
 'use client'
 
 import { checkFilteredInvoices } from "@/app/lib/actions"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-export function Checkbox ({ query, hasUnchecked }: { query: string, hasUnchecked: boolean }) {
-  const [checked, setChecked] = useState(!hasUnchecked)
+export function Checkbox ({ query, allChecked }: { query: string, allChecked: boolean }) {
+  const [checked, setChecked] = useState(allChecked)
+  
+  useEffect (() => setChecked(allChecked), [allChecked])
 
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked

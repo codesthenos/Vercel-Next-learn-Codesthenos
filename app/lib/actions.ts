@@ -160,6 +160,7 @@ export async function checkInvoiceById (checked: boolean, id: string) {
     SET checked = ${checked}
     WHERE id = ${id}
     `
+    revalidatePath('/dashboard/invoices')
   } catch (error) {
     return { message: 'Database Error: Failed to Check Invoice'}
   }
