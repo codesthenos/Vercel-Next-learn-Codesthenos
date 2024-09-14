@@ -132,7 +132,7 @@ export async function deleteInvoice (id: string) {
   }
 }
 
-export async function checkFilteredInvoices (checked: boolean, query: string) {
+export async function checkFilteredInvoices (checked: boolean, query: string, currentPage: number) {
   try {
     await sql`
     UPDATE invoices
@@ -149,7 +149,7 @@ export async function checkFilteredInvoices (checked: boolean, query: string) {
   } catch (error) {
     return { message: 'Database Error: Failed to Check Invoices'}
   }
-  revalidatePath('/dashboard/invoices')
+  revalidatePath(`/dashboard/invoices?page=${currentPage}&search=${query}`)
 }
 
 export async function checkInvoiceById (checked: boolean, id: string) {

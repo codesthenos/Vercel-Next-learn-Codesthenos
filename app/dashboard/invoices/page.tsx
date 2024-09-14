@@ -30,7 +30,7 @@ export default async function Page({
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Checkbox query={query} allChecked={allChecked} />
+        <Checkbox query={query} allChecked={allChecked} currentPage={currentPage} />
         <Search placeholder="Search invoices..." />
         <CreateInvoice />
       </div>
