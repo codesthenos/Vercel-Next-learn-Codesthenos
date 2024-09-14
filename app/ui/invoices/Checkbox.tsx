@@ -1,17 +1,21 @@
 'use client'
 
 import { checkFilteredInvoices } from "@/app/lib/actions"
+//import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export function Checkbox ({ query, allChecked }: { query: string, allChecked: boolean }) {
+  //const router = useRouter()
+  //const searchParams = useSearchParams()
+
   const [checked, setChecked] = useState(allChecked)
   
   useEffect (() => setChecked(allChecked), [allChecked])
 
-  const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckAll = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked
     setChecked(isChecked)
-    checkFilteredInvoices(isChecked, query)
+    await checkFilteredInvoices(isChecked, query)
   }
 
   return (
