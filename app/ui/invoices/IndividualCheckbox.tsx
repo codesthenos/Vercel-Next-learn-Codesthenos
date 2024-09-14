@@ -1,24 +1,29 @@
 'use client'
 
 import { checkInvoiceById } from "@/app/lib/actions"
-import { useEffect, useState/*, useActionState*/ } from "react"
+import { useEffect, useState } from "react"
+import { useRouter, useSearchParams, usePathname } from "next/navigation"
 
-export function IndividualCheckbox ({ id, checked }: { id: string, checked: boolean }) {
+export function IndividualCheckbox ({ id, checked, query, currentPage }: { id: string, checked: boolean, query: string, currentPage: number }) {
   const [individualChecked, setIndividualChecked] = useState(checked)
 
-  //const initialState: { status: string, message: string | null } = { status: 'idle', message: null }
-  
-  //const checkInvId = checkInvoiceById.bind(null, checked, id)
-  
-  //const [state, dispatchCheckInvoice] = useActionState(checkInvId, initialState)
+  useEffect(() => { setIndividualChecked(checked)}, [checked])
 
-  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { replace } = useRouter()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+
+  const handleCheck = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked
     setIndividualChecked(isChecked)
-    checkInvoiceById(isChecked, id)
-  }
+    await checkInvoiceById(isChecked, id)
 
-  useEffect(() => { setIndividualChecked(checked)}, [checked])
+    const params = new URLSearchParams(searchParams)
+    params.set('page', `${currentPage}`)
+    params.set('search', query)
+
+    replace(`${pathname}?${params.toString()}`)
+  }
 
   return (
     <div>

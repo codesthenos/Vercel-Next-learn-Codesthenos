@@ -5,15 +5,13 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export function Checkbox ({ query, allChecked, currentPage }: { query: string, allChecked: boolean, currentPage: number }) {
-  const { replace } = useRouter()
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-
-
-
   const [checked, setChecked] = useState(allChecked)
   
   useEffect (() => setChecked(allChecked), [allChecked])
+  
+  const { replace } = useRouter()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
 
   const handleCheckAll = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked
