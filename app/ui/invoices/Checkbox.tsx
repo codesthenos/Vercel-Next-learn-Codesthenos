@@ -1,12 +1,15 @@
 'use client'
 
 import { checkFilteredInvoices } from "@/app/lib/actions"
-//import { useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export function Checkbox ({ query, allChecked, currentPage }: { query: string, allChecked: boolean, currentPage: number }) {
-  //const router = useRouter()
-  //const searchParams = useSearchParams()
+  const { replace } = useRouter()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+
+
 
   const [checked, setChecked] = useState(allChecked)
   
@@ -15,7 +18,13 @@ export function Checkbox ({ query, allChecked, currentPage }: { query: string, a
   const handleCheckAll = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked
     setChecked(isChecked)
-    await checkFilteredInvoices(isChecked, query, currentPage)
+    await checkFilteredInvoices(isChecked, query)
+
+    const params = new URLSearchParams(searchParams)
+    params.set('page', `${currentPage}`)
+    params.set('search', query)
+
+    replace(`${pathname}?${params.toString()}`)
   }
 
   return (
