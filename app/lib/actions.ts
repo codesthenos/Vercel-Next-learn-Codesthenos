@@ -146,11 +146,10 @@ export async function checkFilteredInvoices (checked: boolean, query: string) {
         invoices.date::text ILIKE ${`%${query}%`} OR
         invoices.status ILIKE ${`%${query}%`}
       )`
-    revalidatePath('/dashboard/invoices')
-    return { message: checked ? 'Checked all Invoices' : 'Unnchecked all Invoices' }
   } catch (error) {
     return { message: 'Database Error: Failed to Check Invoices'}
   }
+  revalidatePath('/dashboard/invoices')
 }
 
 export async function checkInvoiceById (checked: boolean, id: string) {
@@ -160,8 +159,8 @@ export async function checkInvoiceById (checked: boolean, id: string) {
     SET checked = ${checked}
     WHERE id = ${id}
     `
-    revalidatePath('/dashboard/invoices')
   } catch (error) {
-    return { message: 'Database Error: Failed to Check Invoice'}
+    return { message: 'Database Error: Failed to Check Invoices'}
   }
+  revalidatePath('/dashboard/invoices')
 }
