@@ -1,3 +1,4 @@
+import { QueryResult } from '@vercel/postgres';
 import { Revenue } from './definitions';
 
 export const formatCurrency = (amount: number) => {
@@ -67,3 +68,58 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export const getHtml = (newData: QueryResult<{
+  id: string;
+  name: string;
+  email: string;
+  date: string;
+  amount: number;
+  status: "pending" | "paid";
+  image_url: string;
+}>) => {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoices</title>
+</head>
+<body>
+  <h1 style='text-align: center;'>Invoices</h1>
+
+  ${newData.rows.map(row => {
+    return`
+  <article style='display: flex; flex-direction: column; gap: 8px; justify-content: center; align-items: center; width: 90vw; height: 90vh;'>
+    <div style='display: flex; justify-content: space-between; align-items: center; min-width: 400px'>
+      <h3>Date:</h3>
+      <p>${row.date.toString().split(' ').slice(0, 4).join('/')}<p>
+    </div>
+    <div style='display: flex; justify-content: space-between; align-items: center; min-width: 400px'>
+      <h3>Status:</h3>
+      <p>${row.status}<p>
+    </div>
+    <div style='display: flex; justify-content: space-between; align-items: center; min-width: 400px'>
+      <h3>Amount:</h3>
+      <p>${row.amount / 100}$<p>
+    </div>
+    <div style='display: flex; justify-content: space-between; align-items: center; min-width: 400px'>
+      <h3>Name:</h3>
+      <p>${row.name}<p>
+    </div>
+    <div style='display: flex; justify-content: space-between; align-items: center; min-width: 400px'>
+      <h3>Email:</h3>
+      <p>${row.email}<p>
+    </div>
+    <div style='display: flex; justify-content: space-between; align-items: center; min-width: 400px'>
+      <h3>Invoice Id:</h3>
+      <p>${row.id}<p>
+    </div>
+  </article>    
+  `
+      }).join('\n-------------------------------------------------------------\n')}
+</body>
+</html>
+`
+}

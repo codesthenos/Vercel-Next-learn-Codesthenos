@@ -4,7 +4,8 @@ import { z } from 'zod'
 import { sql } from '@vercel/postgres'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import type { InvoicesTable } from './definitions'
+import type { InvoicesTable } from '@/app/lib/definitions'
+import { getHtml } from '@/app/lib/utils'
 
 export type State = {
   errors?: {
@@ -394,6 +395,68 @@ Customer Email:  ${row.email}
     }).join('\n-------------------------------------------------------------\n')
 
     return { fileContent: txt }
+  } catch (error) {
+    return { error: 'Error downloading files' }
+  }
+}
+
+export async function downloadHTML (id: string) {
+  try {
+    const newData = await sql<{
+      id: string;
+      name: string;
+      email: string;
+      date: string;
+      amount: number;
+      status: "pending" | "paid";
+      image_url: string;
+  }>`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        customers.name,
+        customers.email
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE invoices.id = ${id};
+    `
+
+    const html = getHtml(newData)
+
+    const fileContent = html
+
+    return { fileContent }
+  } catch (error) {
+    return { error: 'Error downloading the file\n' + error } 
+  }
+}
+
+export async function downloadCheckedHTML (query: string) {
+  try {
+    const newData = await sql<InvoicesTable>`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        invoices.checked,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE
+        (customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        invoices.amount::text ILIKE ${`%${query}%`} OR
+        invoices.date::text ILIKE ${`%${query}%`} OR
+        invoices.status ILIKE ${`%${query}%`})
+        AND invoices.checked = true
+      ORDER BY invoices.date DESC;
+    `
+    return { fileContent: getHtml(newData) }
   } catch (error) {
     return { error: 'Error downloading files' }
   }
