@@ -190,3 +190,34 @@ export async function downloadJSON (id: string) {
     return { error: 'Error downloading the file' } 
   }
 }
+
+export async function downloadCheckedJSON (query: string) {
+  try {
+    const newData = await sql`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        invoices.checked,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE
+        (customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        invoices.amount::text ILIKE ${`%${query}%`} OR
+        invoices.date::text ILIKE ${`%${query}%`} OR
+        invoices.status ILIKE ${`%${query}%`})
+        AND invoices.checked = true
+      ORDER BY invoices.date DESC;
+    `
+    const fileContent = JSON.stringify(newData.rows, null, 2)
+
+    return { fileContent }
+  } catch (error) {
+    return { error: 'Error downloading files' }
+  }
+}

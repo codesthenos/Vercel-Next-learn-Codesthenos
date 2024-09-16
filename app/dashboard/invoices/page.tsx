@@ -2,6 +2,7 @@ import { fetchFilteredInvoicesChecked, fetchInvoicesPages } from "@/app/lib/data
 import { lusitana } from "@/app/ui/fonts";
 import { CreateInvoice } from "@/app/ui/invoices/buttons";
 import Checkbox from "@/app/ui/invoices/Checkbox";
+import DownloadCheckedButton from "@/app/ui/invoices/DownloadCheckedInvoicesJSON";
 import Pagination from "@/app/ui/invoices/pagination";
 import InvoicesTable from "@/app/ui/invoices/table";
 import Search from "@/app/ui/search";
@@ -30,7 +31,10 @@ export default async function Page({
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Checkbox query={query} allChecked={allChecked} currentPage={currentPage} />
+        <div className="flex gap-2">
+          <Checkbox query={query} allChecked={allChecked} currentPage={currentPage} />
+          <DownloadCheckedButton query={query} />
+        </div>
         <Search placeholder="Search invoices..." />
         <CreateInvoice />
       </div>
