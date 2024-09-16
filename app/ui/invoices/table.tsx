@@ -4,7 +4,8 @@ import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import type { InvoicesTable } from '@/app/lib/definitions';
 import { fetchFilteredInvoices } from '@/app/lib/data';
-import { IndividualCheckbox } from '@/app/ui/invoices/IndividualCheckbox';
+import IndividualCheckbox from '@/app/ui/invoices/IndividualCheckbox';
+import DownloadButton from '@/app/ui/invoices/DownloadInvoiceJSON';
 
 export default async function InvoicesTable({
   query,
@@ -27,6 +28,7 @@ export default async function InvoicesTable({
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <IndividualCheckbox id={invoice.id} checked={invoice.checked} query={query} currentPage={currentPage} />
+                  <DownloadButton id={invoice.id} />
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
@@ -92,6 +94,7 @@ export default async function InvoicesTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-start gap-3">
                       <IndividualCheckbox id={invoice.id} checked={invoice.checked} query={query} currentPage={currentPage} />
+                      <DownloadButton id={invoice.id} />
                     </div>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">

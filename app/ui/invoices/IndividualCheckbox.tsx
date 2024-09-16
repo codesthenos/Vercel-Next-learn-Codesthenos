@@ -4,7 +4,7 @@ import { checkInvoiceById } from "@/app/lib/actions"
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 
-export function IndividualCheckbox ({ id, checked, query, currentPage }: { id: string, checked: boolean, query: string, currentPage: number }) {
+export default function IndividualCheckbox ({ id, checked, query, currentPage }: { id: string, checked: boolean, query: string, currentPage: number }) {
   const [individualChecked, setIndividualChecked] = useState(checked)
 
   useEffect(() => { setIndividualChecked(checked)}, [checked])

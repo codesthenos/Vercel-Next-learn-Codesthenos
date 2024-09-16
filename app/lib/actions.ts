@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { sql } from '@vercel/postgres'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+//import { fetchInvoiceById } from './data'
 
 export type State = {
   errors?: {
@@ -163,4 +164,29 @@ export async function checkInvoiceById (checked: boolean, id: string) {
     return { message: 'Database Error: Failed to Check Invoices'}
   }
   revalidatePath('/dashboard/invoices')
+}
+
+export async function downloadJSON (id: string) {
+  try {
+    const newData = await sql`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        invoices.checked,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE invoices.id = ${id};
+    `
+
+    const fileContent = JSON.stringify(newData.rows, null, 2)
+
+    return { fileContent }
+  } catch (error) {
+    return { error: 'Error downloading the file' } 
+  }
 }

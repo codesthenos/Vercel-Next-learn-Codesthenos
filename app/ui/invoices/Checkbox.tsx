@@ -4,7 +4,7 @@ import { checkFilteredInvoices } from "@/app/lib/actions"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
-export function Checkbox ({ query, allChecked, currentPage }: { query: string, allChecked: boolean, currentPage: number }) {
+export default function Checkbox ({ query, allChecked, currentPage }: { query: string, allChecked: boolean, currentPage: number }) {
   const [checked, setChecked] = useState(allChecked)
   
   useEffect (() => setChecked(allChecked), [allChecked])
