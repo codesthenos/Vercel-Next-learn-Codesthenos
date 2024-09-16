@@ -5,7 +5,7 @@ import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import type { InvoicesTable } from '@/app/lib/definitions';
 import { fetchFilteredInvoices } from '@/app/lib/data';
 import IndividualCheckbox from '@/app/ui/invoices/IndividualCheckbox';
-import DownloadButton from '@/app/ui/invoices/DownloadInvoiceCSV';
+import DownloadButton from '@/app/ui/invoices/DownloadInvoiceTXT';
 
 export default async function InvoicesTable({
   query,

@@ -246,7 +246,7 @@ export async function downloadCSV (id: string) {
       ...newData.rows.map(row => [
         row.date.toString().split(' ').slice(0, 4).join('/'),
         row.status,
-        row.amount,
+        `${row.amount / 100}$`,
         row.name,
         row.email,
         row.id
@@ -292,7 +292,7 @@ export async function downloadCheckedCSV (query: string) {
       ...newData.rows.map(row => [
         row.date.toString().split(' ').slice(0, 4).join('/'),
         row.status,
-        row.amount,
+        `${row.amount / 100}$`,
         row.name,
         row.email,
         row.id
@@ -302,6 +302,98 @@ export async function downloadCheckedCSV (query: string) {
     const fileContent = csvRows.join('\n')
 
     return { fileContent }
+  } catch (error) {
+    return { error: 'Error downloading files' }
+  }
+}
+
+export async function downloadTXT (id: string) {
+  try {
+    const newData = await sql<{
+      id: string;
+      name: string;
+      email: string;
+      date: string;
+      amount: number;
+      status: "pending" | "paid";
+  }>`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        customers.name,
+        customers.email
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE invoices.id = ${id};
+    `
+
+    const txt = newData.rows.map(row => {
+      return `
+          Date:  ${row.date.toString().split(' ').slice(0, 4).join('/')}
+      
+        Status:  ${row.status}
+      
+        Amount:  ${row.amount / 100}$
+      
+ Customer Name:  ${row.name}
+      
+Customer Email:  ${row.email}
+      
+    Invoice Id:  ${row.id}      
+`
+    }).join('\n-------------------------------------------------------------\n')
+
+    const fileContent = txt
+
+    return { fileContent }
+  } catch (error) {
+    return { error: 'Error downloading the file\n' + error } 
+  }
+}
+
+export async function downloadCheckedTXT (query: string) {
+  try {
+    const newData = await sql<InvoicesTable>`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        invoices.checked,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE
+        (customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        invoices.amount::text ILIKE ${`%${query}%`} OR
+        invoices.date::text ILIKE ${`%${query}%`} OR
+        invoices.status ILIKE ${`%${query}%`})
+        AND invoices.checked = true
+      ORDER BY invoices.date DESC;
+    `
+
+    const txt = newData.rows.map(row => {
+      return `
+          Date:  ${row.date.toString().split(' ').slice(0, 4).join('/')}
+      
+        Status:  ${row.status}
+      
+        Amount:  ${row.amount / 100}$
+      
+ Customer Name:  ${row.name}
+      
+Customer Email:  ${row.email}
+      
+    Invoice Id:  ${row.id}      
+`
+    }).join('\n-------------------------------------------------------------\n')
+
+    return { fileContent: txt }
   } catch (error) {
     return { error: 'Error downloading files' }
   }
