@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { sql } from '@vercel/postgres'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-//import { fetchInvoiceById } from './data'
+import type { InvoicesTable } from './definitions'
 
 export type State = {
   errors?: {
@@ -168,7 +168,7 @@ export async function checkInvoiceById (checked: boolean, id: string) {
 
 export async function downloadJSON (id: string) {
   try {
-    const newData = await sql`
+    const newData = await sql<InvoicesTable>`
       SELECT
         invoices.id,
         invoices.amount,
@@ -193,7 +193,7 @@ export async function downloadJSON (id: string) {
 
 export async function downloadCheckedJSON (query: string) {
   try {
-    const newData = await sql`
+    const newData = await sql<InvoicesTable>`
       SELECT
         invoices.id,
         invoices.amount,
@@ -215,6 +215,91 @@ export async function downloadCheckedJSON (query: string) {
       ORDER BY invoices.date DESC;
     `
     const fileContent = JSON.stringify(newData.rows, null, 2)
+
+    return { fileContent }
+  } catch (error) {
+    return { error: 'Error downloading files' }
+  }
+}
+
+export async function downloadCSV (id: string) {
+  try {
+    const newData = await sql<InvoicesTable>`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        invoices.checked,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE invoices.id = ${id};
+    `
+
+    const headers = ['Date', 'Status', 'Amount', 'Customer Name', 'Customer Email', 'Invoice Id']
+
+    const csvRows = [
+      headers.join(','),
+      ...newData.rows.map(row => [
+        row.date.toString().split(' ').slice(0, 4).join('/'),
+        row.status,
+        row.amount,
+        row.name,
+        row.email,
+        row.id
+      ].join(','))
+    ]
+
+    const fileContent = csvRows.join('\n')
+
+    return { fileContent }
+  } catch (error) {
+    return { error: 'Error downloading the file\n' + error } 
+  }
+}
+
+export async function downloadCheckedCSV (query: string) {
+  try {
+    const newData = await sql<InvoicesTable>`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        invoices.checked,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE
+        (customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        invoices.amount::text ILIKE ${`%${query}%`} OR
+        invoices.date::text ILIKE ${`%${query}%`} OR
+        invoices.status ILIKE ${`%${query}%`})
+        AND invoices.checked = true
+      ORDER BY invoices.date DESC;
+    `
+
+    const headers = ['Date', 'Status', 'Amount', 'Customer Name', 'Customer Email', 'Invoice Id']
+
+    const csvRows = [
+      headers.join(','),
+      ...newData.rows.map(row => [
+        row.date.toString().split(' ').slice(0, 4).join('/'),
+        row.status,
+        row.amount,
+        row.name,
+        row.email,
+        row.id
+      ].join(','))
+    ]
+
+    const fileContent = csvRows.join('\n')
 
     return { fileContent }
   } catch (error) {

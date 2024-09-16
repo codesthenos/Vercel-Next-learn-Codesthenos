@@ -2,7 +2,7 @@ import { fetchFilteredInvoicesChecked, fetchInvoicesPages } from "@/app/lib/data
 import { lusitana } from "@/app/ui/fonts";
 import { CreateInvoice } from "@/app/ui/invoices/buttons";
 import Checkbox from "@/app/ui/invoices/Checkbox";
-import DownloadCheckedButton from "@/app/ui/invoices/DownloadCheckedInvoicesJSON";
+import DownloadCheckedButton from "@/app/ui/invoices/DownloadCheckedInvoicesCSV";
 import Pagination from "@/app/ui/invoices/pagination";
 import InvoicesTable from "@/app/ui/invoices/table";
 import Search from "@/app/ui/search";
