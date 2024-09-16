@@ -2,12 +2,15 @@ import { fetchFilteredInvoicesChecked, fetchInvoicesPages } from "@/app/lib/data
 import { lusitana } from "@/app/ui/fonts";
 import { CreateInvoice } from "@/app/ui/invoices/buttons";
 import Checkbox from "@/app/ui/invoices/Checkbox";
-import DownloadCheckedButton from "@/app/ui/invoices/DownloadCheckedInvoicesHTML";
 import Pagination from "@/app/ui/invoices/pagination";
 import InvoicesTable from "@/app/ui/invoices/table";
 import Search from "@/app/ui/search";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
+import HTMLButton from "@/app/ui/invoices/DownloadCheckedInvoicesHTML";
+import CSVButton from "@/app/ui/invoices/DownloadCheckedInvoicesCSV";
+import TXTButton from "@/app/ui/invoices/DownloadCheckedInvoicesTXT";
+import JSONButton from "@/app/ui/invoices/DownloadCheckedInvoicesJSON";
 
 export default async function Page({
   searchParams,
@@ -31,9 +34,14 @@ export default async function Page({
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <Checkbox query={query} allChecked={allChecked} currentPage={currentPage} />
-          <DownloadCheckedButton query={query} />
+          <div className="grid grid-cols-2 gap-2 items-center">
+            <HTMLButton query={query} />
+            <JSONButton query={query} />
+            <TXTButton query={query} />
+            <CSVButton query={query} />
+          </div>
         </div>
         <Search placeholder="Search invoices..." />
         <CreateInvoice />

@@ -1,11 +1,14 @@
-import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import type { InvoicesTable } from '@/app/lib/definitions';
-import { fetchFilteredInvoices } from '@/app/lib/data';
-import IndividualCheckbox from '@/app/ui/invoices/IndividualCheckbox';
-import DownloadButton from '@/app/ui/invoices/DownloadInvoiceHTML';
+import Image from 'next/image'
+import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons'
+import InvoiceStatus from '@/app/ui/invoices/status'
+import { formatDateToLocal, formatCurrency } from '@/app/lib/utils'
+import type { InvoicesTable } from '@/app/lib/definitions'
+import { fetchFilteredInvoices } from '@/app/lib/data'
+import IndividualCheckbox from '@/app/ui/invoices/IndividualCheckbox'
+import HTMLButton from '@/app/ui/invoices/DownloadInvoiceHTML'
+import JSONButton from '@/app/ui/invoices/DownloadInvoiceJSON'
+import TXTButton from '@/app/ui/invoices/DownloadInvoiceTXT'
+import CSVButton from '@/app/ui/invoices/DownloadInvoiceCSV'
 
 export default async function InvoicesTable({
   query,
@@ -28,7 +31,12 @@ export default async function InvoicesTable({
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <IndividualCheckbox id={invoice.id} checked={invoice.checked} query={query} currentPage={currentPage} />
-                  <DownloadButton id={invoice.id} />
+                  <div className="grid grid-cols-2 gap-2">
+                    <HTMLButton id={invoice.id} />
+                    <JSONButton id={invoice.id} />
+                    <TXTButton id={invoice.id} />
+                    <CSVButton id={invoice.id} />
+                  </div>
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
@@ -94,7 +102,10 @@ export default async function InvoicesTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-start gap-3">
                       <IndividualCheckbox id={invoice.id} checked={invoice.checked} query={query} currentPage={currentPage} />
-                      <DownloadButton id={invoice.id} />
+                      <HTMLButton id={invoice.id} />
+                      <JSONButton id={invoice.id} />
+                      <TXTButton id={invoice.id} />
+                      <CSVButton id={invoice.id} />
                     </div>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
