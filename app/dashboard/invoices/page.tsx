@@ -11,6 +11,11 @@ import HTMLButton from "@/app/ui/invoices/DownloadCheckedInvoicesHTML";
 import CSVButton from "@/app/ui/invoices/DownloadCheckedInvoicesCSV";
 import TXTButton from "@/app/ui/invoices/DownloadCheckedInvoicesTXT";
 import JSONButton from "@/app/ui/invoices/DownloadCheckedInvoicesJSON";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Invoices'
+}
 
 export default async function Page({
   searchParams,
