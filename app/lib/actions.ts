@@ -6,6 +6,8 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { InvoicesTable } from '@/app/lib/definitions'
 import { getHtml } from '@/app/lib/utils'
+import { signIn } from '@/auth'
+import { AuthError } from 'next-auth'
 
 export type State = {
   errors?: {
@@ -459,5 +461,19 @@ export async function downloadCheckedHTML (query: string) {
     return { fileContent: getHtml(newData) }
   } catch (error) {
     return { error: 'Error downloading files' }
+  }
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData
+) {
+  try {
+    await signIn('credentials', formData)
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return error.type === 'CredentialsSignin' ? 'Invalid credentials' : 'Something went wrong'
+    }
+    throw error
   }
 }
